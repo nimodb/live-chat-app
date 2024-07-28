@@ -1,11 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import ProfileForm
 
 
-def profile_view(request):
-    profile = request.user.profile
+def profile_view(request, username=None):
+    if username:
+        profile = get_object_or_404(User, username=username).profile
+    else:
+        try:
+            profile = request.user.profile
+        except:
+            return redirect("account_login")
     context = {"profile": profile}
     return render(request, "users/profile.html", context)
 
