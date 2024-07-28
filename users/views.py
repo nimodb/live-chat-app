@@ -70,6 +70,7 @@ def profile_email_change(request):
 
             # Then send confirmation email
             send_email_confirmation(request, request.user)
+            messages.success(request, "Email address updated. Please check your inbox to verify the new email.")
 
             return redirect("profile-settings")
         else:
