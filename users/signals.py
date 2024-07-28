@@ -13,3 +13,9 @@ def user_post_save(sender, instance, created, **kwarg):
         Profile.objects.create(
             user=user,
         )
+
+
+@receiver(pre_save, sender=User)
+def user_pre_save(sender, instance, **kwargs):
+    if instance.username:
+        instance.username = instance.username.lower()

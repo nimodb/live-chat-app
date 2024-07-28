@@ -24,14 +24,14 @@
                         <li><a href="{% url 'profile' %}">My Profile</a></li> 
                         <li><a href="{% url 'profile-edit' %}">Edit Profile</a></li>
                         <li><a href="profile-settings">Settings</a></li>
-                        <li><a href="account_logout">Log Out</a></li>
+                        <li><a href="{% url 'account_logout' %}">Log Out</a></li>
                     </ul>
                 </div>
             </li>
             
             {% else %}
-            <li><a href="">Login</a></li> <!-- % url 'account_login' % -->
-            <li><a href="">Signup</a></li> <!-- % url 'account_signup' %}?next={% url 'profile-onboarding' % -->
+            <li><a href="{% url 'account_login' %}">Login</a></li>
+            <li><a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">Signup</a></li>
             {% endif %}
         </ul>
     </nav>
