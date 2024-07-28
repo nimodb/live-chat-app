@@ -7,10 +7,17 @@ from .models import Profile
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ["user"]
-        # fields = ["image", "nickname", "info"]
+        fields = ["image", "nickname", "info"]
         widgets = {
             "image": forms.FileInput(),
             "nickname": forms.TextInput(attrs={"placeholder": "Add display name"}),
             "info": forms.Textarea(attrs={"rows": 3, "placeholder": "Add information"}),
         }
+
+
+class EmailForm(ModelForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ["email"]
