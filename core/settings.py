@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from environ import Env
+
+env = Env()
+Env.read_env()
+ENVIRONMENT = env("ENVIRONMENT", default="production")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%c)91v9-7b^4pcd+h9opr33yfg)3av*6=+=i974mhyhm-j6!!@"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True) if ENVIRONMENT == "development" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_cleanup.apps.CleanupConfig",
+    "admin_honeypot",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -86,12 +93,20 @@ TEMPLATES = [
 # WSGI_APPLICATION = "core.wsgi.application"
 ASGI_APPLICATION = "core.asgi.application"
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer",
+#     }
+# }
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
