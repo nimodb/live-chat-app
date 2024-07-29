@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .decorators import verified_required
 from django.contrib.auth.models import User
-from .forms import ChatMessageForm, NewGroupForm
+from .forms import ChatMessageForm, NewGroupForm, ChatRoomEditForm
 from .models import ChatGroup
 
 
@@ -90,3 +90,27 @@ def create_groupchat(request):
         "form": form,
     }
     return render(request, "rtchat/create_groupchat.html", context)
+
+
+@login_required
+@verified_required
+def chatroom_edit_view(request, chatroom_name):
+    chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
+    form = ChatRoomEditForm(instance=chat_group)
+    if request.method == "POST":
+        form = ChatRoomEditForm(request.POST, instance=chat_group)
+        if form.is_valid:
+            form.save()
+
+            remove_members = request.POST.getlist("remove_members")
+            for member_id in remove_members:
+                member = get_object_or_404(User, id=member_id)
+                chat_group.members.remove(member)
+
+            return redirect("chatroom", chatroom_name)
+
+    context = {
+        "form": form,
+        "chat_group": chat_group,
+    }
+    return render(request, "rtchat/chatroom_edit.html", context)
