@@ -29,9 +29,7 @@
                 >
                     <ul class="hoverlist [&>li>a]:justify-end">
                         {% for chatgroup in user_chatgroups %}
-                            {% if chatgroup.groupchat_name %}
-                                <li><a class="leading-5" href="{% url 'chatroom' chatgroup.group_name %}">{{chatgroup.groupchat_name|slice:':15'}}</a></li>
-                            {% endif %}
+                            <li><a class="leading-5" href="{% url 'chatroom' chatgroup.group_name %}">{{chatgroup.groupchat_name|slice:':15'}}...</a></li>
                         {% endfor %}
                     </ul>
                 </div>

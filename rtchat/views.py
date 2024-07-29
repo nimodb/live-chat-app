@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from .decorators import verified_required
 from django.contrib.auth.models import User
 from .forms import ChatMessageForm, NewGroupForm
 from .models import ChatGroup
 
 
 @login_required
+@verified_required
 def chat_view(request, chatroom_name="public-chat"):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
     chat_messages = chat_group.chat_messages.all()[:30]
@@ -34,7 +37,9 @@ def chat_view(request, chatroom_name="public-chat"):
             return render(request, "rtchat/partials/chat_message_p.html", context_hx)
 
     user_chatrooms = request.user.chat_groups.filter(is_private=True)
-    user_chatgroups = request.user.chat_groups.all()
+    user_chatgroups = request.user.chat_groups.filter(
+        Q(groupchat_name__isnull=False) & ~Q(groupchat_name="")
+    )
 
     context = {
         "chat_messages": chat_messages,
@@ -49,6 +54,7 @@ def chat_view(request, chatroom_name="public-chat"):
 
 
 @login_required
+@verified_required
 def get_or_create_chatroom(request, username):
     if request.user == username:
         return redirect("home")
@@ -67,6 +73,7 @@ def get_or_create_chatroom(request, username):
 
 
 @login_required
+@verified_required
 def create_groupchat(request):
     form = NewGroupForm()
 
