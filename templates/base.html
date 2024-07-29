@@ -7,9 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Title</title>
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+    <script src="{% static 'unpkg/cdn.min.js' %}" defer></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> -->
+    <script src="{% static 'unpkg/htmx.js' %}" defer></script>
+    <!-- <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script> -->
+    <script src="{% static 'unpkg/ws.js' %}" defer></script>
+    <!-- <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script> -->
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
@@ -96,6 +99,15 @@
         .alert-success { @apply bg-emerald-600 }
         .alert-warning { @apply bg-orange-600 }
         .alert-danger { @apply bg-red-600 }
+        .green-dot {
+            @apply bg-green-500 p-1.5 rounded-full
+        }
+        .gray-dot {
+            @apply bg-gray-500 p-1.5 rounded-full
+        }
+        .graylight-dot {
+            @apply bg-gray-300 p-1.5 rounded-full
+        }
     </style>
 </head>
 <body class="{% block class %}{% endblock %}">
