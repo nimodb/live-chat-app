@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from .decorators import verified_required
+from .decorators import verified_required, chat_admin_required
 from django.contrib.auth.models import User
 from .forms import ChatMessageForm, NewGroupForm, ChatRoomEditForm
 from .models import ChatGroup
@@ -94,6 +94,7 @@ def create_groupchat(request):
 
 @login_required
 @verified_required
+@chat_admin_required
 def chatroom_edit_view(request, chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
     form = ChatRoomEditForm(instance=chat_group)
