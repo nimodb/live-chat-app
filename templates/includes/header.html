@@ -8,6 +8,35 @@
     <nav class="block relative">
         <ul class="navitems flex items-center justify-center h-full">
             {% if request.user.is_authenticated %}
+            <!-- Public Chat -->
+            <li>
+                <a href="{% url 'home' %}">
+                <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=HDIsjrkmMbRD&format=png&color=000000"/>
+                Home
+                </a>
+            </li>
+            <!-- Group -->
+            <li x-data="{ dropdownOpen: false }" class="relative">
+                <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
+                    <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=zOXVeDaQsxQH&format=png&color=000000"/>
+                    Groups
+                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png"/>
+                </a>
+                <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
+                x-transition:enter="duration-300 ease-out"
+                x-transition:enter-start="opacity-0 -translate-y-5 scale-90"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                >
+                    <ul class="hoverlist [&>li>a]:justify-end">
+                        {% for chatgroup in user_chatgroups %}
+                            {% if chatgroup.groupchat_name %}
+                                <li><a class="leading-5" href="{% url 'chatroom' chatgroup.group_name %}">{{chatgroup.groupchat_name|slice:':15'}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+            <!-- Private -->
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=81271&format=png&color=000000"/>
@@ -20,7 +49,6 @@
                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                 >
                     <ul class="hoverlist [&>li>a]:justify-end">
-                        <li><a href="{% url 'home' %}">Public chat</a></li> 
                         {% for chatroom in user_chatrooms %}
                             {% for member in chatroom.members.all %}
                                 {% if member != user %}
@@ -31,6 +59,7 @@
                     </ul>
                 </div>
             </li>
+            <!-- Profile -->
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ user.profile.avatar }}"/>
@@ -45,6 +74,7 @@
                     <ul class="hoverlist [&>li>a]:justify-end">
                         <li><a href="{% url 'profile' %}">My Profile</a></li> 
                         <li><a href="{% url 'profile-edit' %}">Edit Profile</a></li>
+                        <li><a href="{% url 'new-groupchat' %}">Create Chat</a></li>
                         <li><a href="{% url 'profile-settings' %}">Settings</a></li>
                         <li><a href="{% url 'account_logout' %}">Log Out</a></li>
                     </ul>

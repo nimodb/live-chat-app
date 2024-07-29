@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import ChatMessageForm
+from .forms import ChatMessageForm, NewGroupForm
 from .models import ChatGroup
 
 
@@ -18,6 +18,10 @@ def chat_view(request, chatroom_name="public-chat"):
             raise Http404()
         other_user = chat_group.members.exclude(pk=request.user.pk).first()
 
+    if chat_group.groupchat_name:
+        if request.user not in chat_group.members.all():
+            chat_group.members.add(request.user)
+
     if request.htmx:
         form = ChatMessageForm(request.POST)
         if form.is_valid:
@@ -28,14 +32,18 @@ def chat_view(request, chatroom_name="public-chat"):
             message.save()
             context_hx = {"message": message, "user": user}
             return render(request, "rtchat/partials/chat_message_p.html", context_hx)
+
     user_chatrooms = request.user.chat_groups.filter(is_private=True)
+    user_chatgroups = request.user.chat_groups.all()
 
     context = {
         "chat_messages": chat_messages,
         "form": form,
         "other_user": other_user,
         "chatroom_name": chatroom_name,
+        "chat_group": chat_group,
         "user_chatrooms": user_chatrooms,
+        "user_chatgroups": user_chatgroups,
     }
     return render(request, "rtchat/chat.html", context)
 
@@ -56,3 +64,22 @@ def get_or_create_chatroom(request, username):
         chatroom.members.add(other_user, request.user)
 
     return redirect("chatroom", chatroom.group_name)
+
+
+@login_required
+def create_groupchat(request):
+    form = NewGroupForm()
+
+    if request.method == "POST":
+        form = NewGroupForm(request.POST)
+        if form.is_valid:
+            new_groupname = form.save(commit=False)
+            new_groupname.admin = request.user
+            new_groupname.save()
+            new_groupname.members.add(request.user)
+            return redirect("chatroom", new_groupname.group_name)
+
+    context = {
+        "form": form,
+    }
+    return render(request, "rtchat/create_groupchat.html", context)
