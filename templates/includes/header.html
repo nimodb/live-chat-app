@@ -13,7 +13,7 @@
             <li>
                 <a href="{% url 'home' %}">
                 <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=HDIsjrkmMbRD&format=png&color=000000"/>
-                Home
+                Home <div id="online-in-chats"></div>
                 </a>
             </li>
             <!-- Group -->
@@ -36,10 +36,7 @@
                 </div>
             </li>
             <!-- Private -->
-            <li x-data="{ dropdownOpen: false }" class="relative"
-                hx-ext="ws"
-                ws-connect="/ws/online-status/"
-                >
+            <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=81271&format=png&color=000000"/>
                     Chats
