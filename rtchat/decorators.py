@@ -19,9 +19,9 @@ def chat_admin_required(view_func):
     def _wrapped_view(request, chatroom_name, *args, **kwargs):
         chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
         if request.user != chat_group.admin:
-            msg = "You are not authorized to edit this chatroom."
+            msg = "You are not authorized to edit/delete this chatroom."
             messages.warning(request, msg)
-            raise Http404("You are not authorized to edit this chatroom.")
+            raise Http404("You are not authorized to edit/delete this chatroom.")
         return view_func(request, chatroom_name, *args, **kwargs)
 
     return _wrapped_view
