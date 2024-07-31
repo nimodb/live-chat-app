@@ -36,3 +36,6 @@ class GroupMessage(models.Model):
     def __str__(self):
         if self.body:
             return f"{self.author.username} : {self.body}"
+
+    class Meta:
+        ordering = ["-created"]

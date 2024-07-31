@@ -47,8 +47,8 @@
         </div>
         <div id='chat_container' class="overflow-y-auto grow">
             <ul id='chat_messages' class="flex flex-col justify-end gap-2 p-4">
-                {% for message in chat_messages %}
-                {% include 'rtchat/chat_message.html' %}
+                {% for message in chat_messages reversed %}
+                    {% include 'rtchat/chat_message.html' %}
                 {% endfor %}
             </ul>
         </div>

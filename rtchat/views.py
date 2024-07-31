@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
-from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .decorators import verified_required, chat_admin_required
 from django.contrib.auth.models import User
+from .decorators import verified_required, chat_admin_required
 from .forms import ChatMessageForm, NewGroupForm, ChatRoomEditForm
 from .models import ChatGroup
 
@@ -117,8 +116,9 @@ def chatroom_edit_view(request, chatroom_name):
 def chatroom_delete_view(request, chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
     if request.method == "POST":
+        chat_group_name = chat_group.groupchat_name
         chat_group.delete()
-        msg = "The chatroom has been successfully deleted."
+        msg = f"The chat group '{chat_group_name}' has been deleted."
         messages.success(request, msg)
         return redirect("home")
 

@@ -2,6 +2,7 @@ import json
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.contrib.auth.models import User
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from .models import ChatGroup, GroupMessage
@@ -70,9 +71,16 @@ class ChatRoomConsumer(WebsocketConsumer):
         context = {
             "online_count": online_count,
             "chat_group": self.chatroom,
+            "users": self.get_chatroom_users(),
         }
         html = render_to_string("rtchat/partials/online_count.html", context=context)
         self.send(text_data=html)
+
+    def get_chatroom_users(self):
+        chat_group = ChatGroup.objects.get(group_name=self.chatroom_name)
+        chat_messages = chat_group.chat_messages.all()[:30]
+        author_ids = set([message.author.id for message in chat_messages])
+        return User.objects.filter(id__in=author_ids)
 
 
 class OnlineStatusConsumer(WebsocketConsumer):
@@ -100,9 +108,7 @@ class OnlineStatusConsumer(WebsocketConsumer):
         self.online_status()
 
     def online_status(self):
-        event = {
-            "type": "online_status_handler",
-        }
+        event = {"type": "online_status_handler"}
         async_to_sync(self.channel_layer.group_send)(self.group_name, event)
 
     def online_status_handler(self, event):
