@@ -6,6 +6,7 @@ from .views import (
     chatroom_edit_view,
     chatroom_delete_view,
     chatroom_leave_view,
+    chat_file_upload,
 )
 
 urlpatterns = [
@@ -16,5 +17,5 @@ urlpatterns = [
     path("chat/edit/<chatroom_name>", chatroom_edit_view, name="edit-chatroom"),
     path("chat/delete/<chatroom_name>", chatroom_delete_view, name="chatroom-delete"),
     path("chat/leave/<chatroom_name>", chatroom_leave_view, name="chatroom-leave"),
-    # path('chat/fileupload/<chatroom_name>', chat_file_upload, name="chat-file-upload"),
+    path("chat/fileupload/<chatroom_name>", chat_file_upload, name="chat-file-upload"),
 ]

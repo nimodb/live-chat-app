@@ -1,0 +1,12 @@
+{% if message.body %}
+    <span>{{message.body}}</span>
+{% elif message.file %}
+    {% if message.is_image %}
+        <img class="max-w-72 min-w-8" src="{{message.file.url}}" alt="{{message.filename}}"><br>
+        <a href="{{message.file.url}}" class="cursor-pointer italic hover:underline" download>
+            <img class="max-w-5 min-w-1" src="https://img.icons8.com/?size=100&id=evIIlF4WA2Jl&format=png&color=000000" alt="">
+        </a>
+    {% else %}
+        <b>&#128193</b> <a href="{{message.file.url}}" class="cursor-pointer italic hover:underline" download>{{message.filename}}</a>
+    {% endif %}
+{% endif %}
