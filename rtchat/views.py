@@ -37,19 +37,12 @@ def chat_view(request, chatroom_name="public-chat"):
             context_hx = {"message": message, "user": user}
             return render(request, "rtchat/partials/chat_message_p.html", context_hx)
 
-    user_chatrooms = request.user.chat_groups.filter(is_private=True)
-    user_chatgroups = request.user.chat_groups.filter(
-        Q(groupchat_name__isnull=False) & ~Q(groupchat_name="")
-    )
-
     context = {
         "chat_messages": chat_messages,
         "form": form,
         "other_user": other_user,
         "chatroom_name": chatroom_name,
         "chat_group": chat_group,
-        "user_chatrooms": user_chatrooms,
-        "user_chatgroups": user_chatgroups,
     }
     return render(request, "rtchat/chat.html", context)
 

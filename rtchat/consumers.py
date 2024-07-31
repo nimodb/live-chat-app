@@ -1,4 +1,5 @@
 import json
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from channels.generic.websocket import WebsocketConsumer
@@ -105,19 +106,39 @@ class OnlineStatusConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(self.group_name, event)
 
     def online_status_handler(self, event):
-        online_users = self.group.users_online.exclude(id=self.user.id)
-        public_chat_users = ChatGroup.objects.get(
-            group_name="public-chat"
-        ).users_online.exclude(id=self.user.id)
-
-        if public_chat_users:
-            online_in_chats = True
-        else:
-            online_in_chats = False
-
         context = {
-            "online_users": online_users,
-            "online_in_chats": online_in_chats,
+            "online_users": self.get_online_users(),
+            "online_in_public_chats": self.is_online_in_public_chat(),
+            "online_in_private_chats": self.is_online_in_private_chats(),
+            "online_in_group_chats": self.is_online_in_group_chats(),
+            "user": self.user,
         }
         html = render_to_string("rtchat/partials/online_status.html", context)
         self.send(text_data=html)
+
+    def get_online_users(self):
+        return self.group.users_online.exclude(id=self.user.id)
+
+    def is_online_in_public_chat(self):
+        public_chat = ChatGroup.objects.get(
+            group_name="public-chat"
+        ).users_online.exclude(id=self.user.id)
+        if public_chat:
+            return True
+        return False
+
+    def is_online_in_private_chats(self):
+        my_private_chats = self.user.chat_groups.filter(is_private=True)
+        return any(
+            chat.users_online.exclude(id=self.user.id).exists()
+            for chat in my_private_chats
+        )
+
+    def is_online_in_group_chats(self):
+        my_group_chats = self.user.chat_groups.filter(
+            Q(groupchat_name__isnull=False) & ~Q(groupchat_name="")
+        )
+        return any(
+            chat.users_online.exclude(id=self.user.id).exists()
+            for chat in my_group_chats
+        )
