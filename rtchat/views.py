@@ -143,7 +143,6 @@ def chatroom_leave_view(request, chatroom_name):
 
 @login_required
 @verified_required
-@chat_admin_required
 def chat_file_upload(request, chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
 
