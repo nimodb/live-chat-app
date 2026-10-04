@@ -1,6 +1,5 @@
 import json
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from channels.generic.websocket import WebsocketConsumer
@@ -12,11 +11,18 @@ class ChatRoomConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
         self.chatroom_name = self.scope["url_route"]["kwargs"]["chatroom_name"]
-        self.chatroom = get_object_or_404(ChatGroup, group_name=self.chatroom_name)
+        self.chatroom = ChatGroup.objects.filter(group_name=self.chatroom_name).first()
+        self.joined = False
+
+        # same rules as chat_view: reject before joining the channel group
+        if not self.can_access():
+            self.close()
+            return
 
         async_to_sync(self.channel_layer.group_add)(
             self.chatroom_name, self.channel_name
         )
+        self.joined = True
 
         # add and update online users
         if self.user not in self.chatroom.users_online.all():
@@ -25,7 +31,21 @@ class ChatRoomConsumer(WebsocketConsumer):
 
         self.accept()
 
+    def can_access(self):
+        if self.chatroom is None or not self.user.is_authenticated:
+            return False
+        if not self.user.emailaddress_set.filter(verified=True).exists():
+            return False
+        # chat_view adds the visitor to a group chat before the page connects
+        if self.chatroom.is_private or self.chatroom.groupchat_name:
+            return self.chatroom.members.filter(pk=self.user.pk).exists()
+        return True
+
     def disconnect(self, close_code):
+        # also runs after a rejected connect
+        if not self.joined:
+            return
+
         async_to_sync(self.channel_layer.group_discard)(
             self.chatroom_name, self.channel_name
         )
@@ -92,7 +112,13 @@ class OnlineStatusConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
         self.group_name = "online-status"
-        self.group = get_object_or_404(ChatGroup, group_name=self.group_name)
+        self.group = ChatGroup.objects.filter(group_name=self.group_name).first()
+        self.joined = False
+
+        if self.group is None or not self.user.is_authenticated:
+            self.close()
+            return
+        self.joined = True
 
         if self.user not in self.group.users_online.all():
             self.group.users_online.add(self.user)
@@ -103,6 +129,9 @@ class OnlineStatusConsumer(WebsocketConsumer):
         self.online_status()
 
     def disconnect(self, code):
+        if not self.joined:
+            return
+
         if self.user in self.group.users_online.all():
             self.group.users_online.remove(self.user)
 
