@@ -16,6 +16,8 @@
     <script>scrollToBottom(100)</script>
 </div>
 
+{# the viewer's own messages have no avatar, so there is no dot to update for them #}
+{% if message.author != user %}
 {% with user=message.author %}
     {% if user in chat_group.users_online.all %}
         <div id="user-{{user.id}}" class="green-dot border-2 border-gray-800 absolute -bottom-1 -right-1"></div>
@@ -23,3 +25,4 @@
         <div id="user-{{user.id}}" class="gray-dot border-2 border-gray-800 absolute -bottom-1 -right-1"></div>
     {% endif %}
 {% endwith %}
+{% endif %}
