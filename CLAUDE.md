@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Real-time chat app built on Django 5.2 (LTS), Django Channels (Daphne) and WebSockets, with an HTMX + Tailwind front end rendered from Django templates. Auth is django-allauth.
+Real-time chat app built on Django 6.1, Django Channels (Daphne) and WebSockets, with an HTMX + Tailwind front end rendered from Django templates. Auth is django-allauth.
 
 ## Commands
 
-Use Python 3.12 (the pins in `requirements.txt` need 3.10+ and also install on 3.14). `twisted-iocpsupport` is Windows-only; skip it on Linux/macOS.
+Use Python 3.12 (Django 6.1 needs 3.12+). `twisted-iocpsupport` is Windows-only; skip it on Linux/macOS.
 
 ```bash
 python3.12 -m venv venv
@@ -37,7 +37,7 @@ The in-memory channel layer only works within a single process, so in dev messag
 
 - **Default chat groups.** `chat_view` defaults to the `public-chat` group and `OnlineStatusConsumer` (connected from the footer of every page) looks up `online-status`. Both 404 until `initialize_chat_groups` has been run.
 - **Static assets are not in git.** `/static/` is gitignored, but `templates/base.html` loads Alpine (`unpkg/cdn.min.js`), HTMX (`unpkg/htmx.js`) and the HTMX WebSocket extension (`unpkg/ws.js`) from there, and `Profile.avatar` falls back to `images/avatar.svg`. Without those files the pages render but nothing real-time works. The CDN equivalents are left as comments next to each tag in `base.html`.
-- **Email verification gate.** Most chat views use `@verified_required` (`rtchat/decorators.py`), which redirects users without a verified allauth `EmailAddress` to `profile-settings`. In dev the confirmation link is printed to the server console.
+- **Email verification gate.** Most chat views use `@verified_required` (`rtchat/decorators.py`), which redirects users without a verified allauth `EmailAddress` to `profile-settings`. In dev the confirmation link is printed to the server console. Since Django 6 the console backend prints the body quoted-printable, so the link is wrapped with a trailing `=` that has to be removed when copying it.
 
 ## Architecture
 
