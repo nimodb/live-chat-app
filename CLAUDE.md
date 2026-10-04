@@ -8,11 +8,11 @@ Real-time chat app built on Django 6.1, Django Channels (Daphne) and WebSockets,
 
 ## Commands
 
-Use Python 3.12 (Django 6.1 needs 3.12+). `twisted-iocpsupport` is Windows-only; skip it on Linux/macOS.
+Use Python 3.12 (Django 6.1 needs 3.12+).
 
 ```bash
 python3.12 -m venv venv
-grep -v twisted-iocpsupport requirements.txt | venv/bin/pip install -r /dev/stdin
+venv/bin/pip install -r requirements.txt
 
 venv/bin/python manage.py migrate
 venv/bin/python manage.py initialize_chat_groups   # required once per database, see below
