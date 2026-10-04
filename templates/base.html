@@ -27,6 +27,9 @@
     {% endblock %}
 
     {% if user.is_authenticated %}
+    <div class="text-center text-xs text-gray-400 py-4">
+        <a href="https://icons8.com" target="_blank" rel="noopener" class="hover:underline">Icons by Icons8</a>
+    </div>
     <footer hx-ext="ws" ws-connect="/ws/online-status/"></footer>
     {% endif %}
 
