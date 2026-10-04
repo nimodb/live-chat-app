@@ -4,8 +4,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from allauth.account.utils import send_email_confirmation
+from allauth.account.internal.flows.email_verification import (
+    get_address_for_user,
+    send_verification_email_to_address,
+)
 from .forms import ProfileForm, EmailForm
+
+
+def send_email_confirmation(request, user):
+    # allauth.account.utils.send_email_confirmation was removed in allauth 65;
+    # like the old helper, only unverified addresses get a confirmation mail
+    address = get_address_for_user(user)
+    if address and not address.verified:
+        send_verification_email_to_address(request, address)
 
 
 def profile_view(request, username=None):
