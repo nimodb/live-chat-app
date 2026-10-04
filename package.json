@@ -1,0 +1,11 @@
+{
+  "name": "live-chat-app",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/tailwind.css -o ./static/css/style.css --minify",
+    "watch:css": "tailwindcss -i ./assets/tailwind.css -o ./static/css/style.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

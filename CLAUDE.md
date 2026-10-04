@@ -22,13 +22,20 @@ venv/bin/python manage.py test                     # all tests
 venv/bin/python manage.py test rtchat.tests.SomeTestCase.test_method   # single test
 ```
 
+CSS is built with the Tailwind CLI (v3, Node required only for this step). The source is `assets/tailwind.css`, which holds the `@tailwind` directives plus all custom classes (`green-dot`, `hoverlist`, buttons, form defaults, ...); the output `static/css/style.css` is committed. Tailwind only emits utilities it finds in the files listed in `tailwind.config.js` (templates and `forms.py`), so rebuild after adding or changing classes:
+
+```bash
+npm install
+npm run build:css      # or: npm run watch:css
+```
+
 The `tests.py` files are still empty stubs. No linter or formatter is configured.
 
 ## Settings
 
 `core/settings/` is split into `common.py`, `dev.py` and `prod.py`. `manage.py`, `core/asgi.py` and `core/wsgi.py` all default `DJANGO_SETTINGS_MODULE` to `core.settings.dev`; production must set it to `core.settings.prod` explicitly.
 
-Static files: sources live in `static/` (tracked, listed in `STATICFILES_DIRS`); `collectstatic` writes to `staticfiles/` (`STATIC_ROOT`, gitignored). WhiteNoise serves `/static/` in both modes; `prod.py` uses `CompressedManifestStaticFilesStorage`, so run `collectstatic` before starting with `DEBUG=False` and reference files only through `{% static %}` (a missing file is a 500 there). `static/unpkg/` holds vendored Alpine 3.14.1 (`cdn.min.js`), htmx 2.0.1 (`htmx.js`) and the htmx WebSocket extension from htmx.org 1.9.12 (`ws.js`). Tailwind (Play CDN) and hyperscript still load from CDNs, and all custom classes (`green-dot`, `hoverlist`, buttons, ...) are defined in the `text/tailwindcss` block in `templates/base.html`, so they need the Tailwind CDN. Uploaded media is only served when `DEBUG` is on.
+Static files: sources live in `static/` (tracked, listed in `STATICFILES_DIRS`); `collectstatic` writes to `staticfiles/` (`STATIC_ROOT`, gitignored). WhiteNoise serves `/static/` in both modes; `prod.py` uses `CompressedManifestStaticFilesStorage`, so run `collectstatic` before starting with `DEBUG=False` and reference files only through `{% static %}` (a missing file is a 500 there). `static/unpkg/` holds vendored Alpine 3.14.1 (`cdn.min.js`), htmx 2.0.1 (`htmx.js`) and the htmx WebSocket extension from htmx.org 1.9.12 (`ws.js`). hyperscript 0.9.12 is vendored there too (`_hyperscript.min.js`). Uploaded media is only served when `DEBUG` is on.
 
 - `dev.py`: SQLite, in-memory channel layer (no Redis needed), console email backend, debug toolbar.
 - `prod.py`: Redis channel layer, `SECRET_KEY` from the environment. `ALLOWED_HOSTS` and the Redis host are `xxxxxxx` placeholders, and no `DATABASES` is defined.
