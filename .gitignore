@@ -167,3 +167,6 @@ cython_debug/
 
 # Node (Tailwind CSS build)
 node_modules/
+
+# Claude Code per-machine settings
+.claude/settings.local.json
