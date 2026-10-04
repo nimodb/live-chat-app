@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Real-time chat app built on Django 5.0, Django Channels (Daphne) and WebSockets, with an HTMX + Tailwind front end rendered from Django templates. Auth is django-allauth.
+Real-time chat app built on Django 5.2 (LTS), Django Channels (Daphne) and WebSockets, with an HTMX + Tailwind front end rendered from Django templates. Auth is django-allauth.
 
 ## Commands
 
-Use Python 3.12. The pins in `requirements.txt` (`pillow==10.4.0`, `cffi==1.16.0`) have no wheels for Python 3.14 and fail to build there. `twisted-iocpsupport` is Windows-only; skip it on Linux/macOS.
+Use Python 3.12 (the pins in `requirements.txt` need 3.10+ and also install on 3.14). `twisted-iocpsupport` is Windows-only; skip it on Linux/macOS.
 
 ```bash
 python3.12 -m venv venv
