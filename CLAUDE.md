@@ -8,18 +8,18 @@ Real-time chat app built on Django 6.1, Django Channels (Daphne) and WebSockets,
 
 ## Commands
 
-Use Python 3.12 (Django 6.1 needs 3.12+).
+Use Python 3.12 or newer (Django 6.1 needs 3.12+). The virtualenv lives in `.venv` (currently Python 3.14).
 
 ```bash
-python3.12 -m venv venv
-venv/bin/pip install -r requirements.txt
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 
-venv/bin/python manage.py migrate
-venv/bin/python manage.py initialize_chat_groups   # required once per database, see below
-venv/bin/python manage.py runserver                # Daphne ASGI server, http://127.0.0.1:8000
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py initialize_chat_groups   # required once per database, see below
+.venv/bin/python manage.py runserver                # Daphne ASGI server, http://127.0.0.1:8000
 
-venv/bin/python manage.py test                     # all tests
-venv/bin/python manage.py test rtchat.tests.SomeTestCase.test_method   # single test
+.venv/bin/python manage.py test                     # all tests
+.venv/bin/python manage.py test rtchat.tests.SomeTestCase.test_method   # single test
 ```
 
 CSS is built with the Tailwind CLI (v3, Node required only for this step). The source is `assets/tailwind.css`, which holds the `@tailwind` directives plus all custom classes (`green-dot`, `hoverlist`, buttons, form defaults, ...); the output `static/css/style.css` is committed. Tailwind only emits utilities it finds in the files listed in `tailwind.config.js` (templates and `forms.py`), so rebuild after adding or changing classes:
