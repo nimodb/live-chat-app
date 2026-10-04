@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-design": {
+      "source": "anthropics/claude-code",
+      "sourceType": "github",
+      "skillPath": "plugins/frontend-design/skills/frontend-design/SKILL.md",
+      "computedHash": "b8c8329ad9b98fa57f4a279e37bdf4a0d55743140e54bb7da3e340d754d75b43"
+    }
+  }
+}
