@@ -93,5 +93,20 @@
         }, time);
     }
     scrollToBottom()
+
+    // show each message's date and time in the viewer's own time zone and locale
+    function localizeMessageTimes(){
+        const thisYear = new Date().getFullYear()
+        document.querySelectorAll("time[data-local]").forEach(function(el) {
+            el.removeAttribute("data-local")
+            const sent = new Date(el.dateTime)
+            if (isNaN(sent)) return
+            const format = {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}
+            if (sent.getFullYear() !== thisYear) format.year = "numeric"
+            el.textContent = sent.toLocaleString(undefined, format)
+            el.title = sent.toLocaleString(undefined, {dateStyle: "full", timeStyle: "short"})
+        })
+    }
+    localizeMessageTimes()
 </script>
 {% endblock %}
