@@ -13,16 +13,16 @@
             <!-- Public Chat -->
             <li>
                 <a href="{% url 'home' %}">
-                <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=HDIsjrkmMbRD&format=png&color=000000"/>
+                <img class="h-8 w-8 rounded-full object-cover" src="{% static 'images/icons/home.png' %}"/>
                 Home <div id="online-in-public-chats"></div>
                 </a>
             </li>
             <!-- Group -->
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
-                    <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=zOXVeDaQsxQH&format=png&color=000000"/>
+                    <img class="h-8 w-8 rounded-full object-cover" src="{% static 'images/icons/groups.png' %}"/>
                     Groups <div id="online-in-group-chats"></div>
-                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png"/>
+                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="{% static 'images/icons/expand-arrow.png' %}"/>
                 </a>
                 <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
                 x-transition:enter="duration-300 ease-out"
@@ -36,9 +36,9 @@
             <!-- Private -->
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
-                    <img class="h-8 w-8 rounded-full object-cover" src="https://img.icons8.com/?size=100&id=81271&format=png&color=000000"/>
+                    <img class="h-8 w-8 rounded-full object-cover" src="{% static 'images/icons/chats.png' %}"/>
                     Chats <div id="online-in-private-chats"></div>
-                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png"/>
+                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="{% static 'images/icons/expand-arrow.png' %}"/>
                 </a>
                 <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
                 x-transition:enter="duration-300 ease-out"
@@ -53,7 +53,7 @@
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ user.profile.avatar }}"/>
                     {{ user.profile.name }}
-                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="https://img.icons8.com/small/32/ffffff/expand-arrow.png"/>
+                    <img x-bind:class="dropdownOpen && 'rotate-180 duration-300'" class="w-4" src="{% static 'images/icons/expand-arrow.png' %}"/>
                 </a>
                 <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
                 x-transition:enter="duration-300 ease-out"
