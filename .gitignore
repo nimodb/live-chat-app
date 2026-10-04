@@ -6,9 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
-# media and static files
+# media and collected static files
 /media/
-/static/
+/staticfiles/
 
 # Distribution / packaging
 .Python

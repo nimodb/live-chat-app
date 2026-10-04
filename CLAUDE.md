@@ -28,6 +28,8 @@ The `tests.py` files are still empty stubs. No linter or formatter is configured
 
 `core/settings/` is split into `common.py`, `dev.py` and `prod.py`. `manage.py`, `core/asgi.py` and `core/wsgi.py` all default `DJANGO_SETTINGS_MODULE` to `core.settings.dev`; production must set it to `core.settings.prod` explicitly.
 
+Static files: sources live in `static/` (tracked, listed in `STATICFILES_DIRS`); `collectstatic` writes to `staticfiles/` (`STATIC_ROOT`, gitignored). WhiteNoise serves `/static/` in both modes; `prod.py` uses `CompressedManifestStaticFilesStorage`, so run `collectstatic` before starting with `DEBUG=False` and reference files only through `{% static %}` (a missing file is a 500 there). `static/unpkg/` holds vendored Alpine 3.14.1 (`cdn.min.js`), htmx 2.0.1 (`htmx.js`) and the htmx WebSocket extension from htmx.org 1.9.12 (`ws.js`). Tailwind (Play CDN) and hyperscript still load from CDNs, and all custom classes (`green-dot`, `hoverlist`, buttons, ...) are defined in the `text/tailwindcss` block in `templates/base.html`, so they need the Tailwind CDN. Uploaded media is only served when `DEBUG` is on.
+
 - `dev.py`: SQLite, in-memory channel layer (no Redis needed), console email backend, debug toolbar.
 - `prod.py`: Redis channel layer, `SECRET_KEY` from the environment. `ALLOWED_HOSTS` and the Redis host are `xxxxxxx` placeholders, and no `DATABASES` is defined.
 
@@ -36,7 +38,6 @@ The in-memory channel layer only works within a single process, so in dev messag
 ## Things that break on a fresh clone
 
 - **Default chat groups.** `chat_view` defaults to the `public-chat` group and `OnlineStatusConsumer` (connected from the footer of every page) looks up `online-status`. Both 404 until `initialize_chat_groups` has been run.
-- **Static assets are not in git.** `/static/` is gitignored, but `templates/base.html` loads Alpine (`unpkg/cdn.min.js`), HTMX (`unpkg/htmx.js`) and the HTMX WebSocket extension (`unpkg/ws.js`) from there, and `Profile.avatar` falls back to `images/avatar.svg`. Without those files the pages render but nothing real-time works. The CDN equivalents are left as comments next to each tag in `base.html`.
 - **Email verification gate.** Most chat views use `@verified_required` (`rtchat/decorators.py`), which redirects users without a verified allauth `EmailAddress` to `profile-settings`. In dev the confirmation link is printed to the server console. Since Django 6 the console backend prints the body quoted-printable, so the link is wrapped with a trailing `=` that has to be removed when copying it.
 
 ## Architecture
