@@ -1,5 +1,5 @@
 <div x-data="{ modal_open: false }">
-    <a href="{% url 'chatroom-leave' chat_group.group_name %}"> </a><a @click="modal_open = true" class="cursor-pointer flex justify-end pt-2 pb-4 text-sm text-gray-400 hover:text-red-500">Leave Chat</a>
+    <a @click="modal_open = true" class="cursor-pointer flex justify-end pt-2 pb-4 text-sm text-gray-400 hover:text-red-500">Leave Chat</a>
     <div x-show="modal_open" x-transition:enter="duration-300 ease-out relative z-50" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" style="display: none;">
         <div class="fixed inset-0 bg-gray-800 bg-opacity-80 z-50"></div>
         <div class="fixed inset-0 z-50">

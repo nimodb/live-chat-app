@@ -74,12 +74,8 @@
             </div>
         </div>
     </div>
-    {% if chat_group.members.exists %}
-        {% if chat_group.admin != user %}
-            <a href="{% url 'chatroom-leave' chat_group.group_name %}">
-                {% include 'rtchat/partials/modal_chat_leave.html' %}
-            </a>
-        {% endif %}
+    {% if chat_group.groupchat_name and chat_group.admin != user %}
+        {% include 'rtchat/partials/modal_chat_leave.html' %}
     {% endif %}
 </wrapper>
 {% endblock %}

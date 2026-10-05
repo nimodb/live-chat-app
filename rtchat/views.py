@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .decorators import verified_required, chat_admin_required
@@ -129,7 +130,9 @@ def chatroom_delete_view(request, chatroom_name):
     return render(request, "rtchat/chatroom_delete.html", context)
 
 
+@require_POST
 @login_required
+@verified_required
 def chatroom_leave_view(request, chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
     if request.user not in chat_group.members.all():
@@ -137,11 +140,21 @@ def chatroom_leave_view(request, chatroom_name):
         messages.warning(request, msg)
         return redirect("home")
 
-    if request.method == "POST":
-        chat_group.members.remove(request.user)
-        msg = "You have successfully left the chatroom."
-        messages.success(request, msg)
-        return redirect("home")
+    # only named group chats can be left: a private chat always keeps its two members
+    if not chat_group.groupchat_name:
+        msg = "This chat cannot be left."
+        messages.warning(request, msg)
+        return redirect("chatroom", chatroom_name)
+
+    if request.user == chat_group.admin:
+        msg = "The admin cannot leave the chatroom."
+        messages.warning(request, msg)
+        return redirect("chatroom", chatroom_name)
+
+    chat_group.members.remove(request.user)
+    msg = "You have successfully left the chatroom."
+    messages.success(request, msg)
+    return redirect("home")
 
 
 @login_required
