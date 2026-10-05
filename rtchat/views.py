@@ -133,7 +133,9 @@ def chatroom_delete_view(request, chatroom_name):
 def chatroom_leave_view(request, chatroom_name):
     chat_group = get_object_or_404(ChatGroup, group_name=chatroom_name)
     if request.user not in chat_group.members.all():
-        raise Http404()
+        msg = "You are not a member of this chatroom."
+        messages.warning(request, msg)
+        return redirect("home")
 
     if request.method == "POST":
         chat_group.members.remove(request.user)
