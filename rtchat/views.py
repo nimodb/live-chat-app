@@ -21,8 +21,7 @@ def chat_view(request, chatroom_name="public-chat"):
     other_user = None
     if chat_group.is_private:
         if request.user not in chat_group.members.all():
-            messages.warning(request, "You are not a member of this private chat.")
-            return redirect("home")
+            raise Http404()
         other_user = chat_group.members.exclude(pk=request.user.pk).first()
 
     if chat_group.groupchat_name:
